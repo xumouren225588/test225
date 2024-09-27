@@ -33,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.read_image_name.outputs.image_name }}:latest # 使用从文件中读取的镜像名称
+          tags: ${{ steps.read_image_name.outputs.image_name }} # 使用从文件中读取的镜像名称
