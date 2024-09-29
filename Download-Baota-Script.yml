@@ -1,0 +1,19 @@
+name: Download Baota Script
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # 每天 0 点执行
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Script
+        run: |
+          wget -O baota_script.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
+      - name: Rename Script
+        run: |
+          mv baota_script.sh $(date +%Y%m%d)_setup.sh
+      - name: Save Script to Repository
+        run: |
+          mv $(date +%Y%m%d)_setup.sh./downloads  # 将脚本移动到指定文件夹，'your_folder' 替换为您想要保存的文件夹名称
