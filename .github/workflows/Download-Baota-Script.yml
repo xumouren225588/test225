@@ -1,20 +1,26 @@
-name: Download and Rename Files vm
-   on:
-     push:
-       branches:
-         - master
-   jobs:
-     download_and_rename:
-       runs-on: ubuntu-latest
-       steps:
-         - name: set beijing timezone
-           uses: szenius/set-timezone@v1.2 
-           with:
-             timezoneLinux: "Asia/Shanghai"
-         - uses: actions/checkout@v3
-         - name: Download install_lts.sh
-           run: |
-             wget -O $(date +%Y%m%d)_install_lts.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
-         - name: Download BtSoft.zip
-           run: |
-             wget -O $(date +%Y%m%d)_BtSoft.zip <mark>https://download.bt.cn/win/panel/BtSoft.zip</mark>
+
+on:
+  push:
+    paths:
+      - '*'  # 表示匹配项目中的任何文件路径
+jobs:
+  download_and_rename:
+    runs-on: ubuntu-latest  # 选择运行环境，这里选择Ubuntu最新版
+    steps:
+      - name: Download install_lts.sh
+        uses: actions/download-artifact@v2
+        with:
+          url: https://download.bt.cn/install/install_lts.sh
+          name: install_lts_${insert\_element\_1\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.sh  # 重命名为当天的日期加原来的后缀名
+      - name: Download BtSoft.zip
+        uses: actions/download-artifact@v2
+        with:
+          url: https://download.bt.cn/win/panel/BtSoft.zip
+          name: BtSoft_${insert\_element\_2\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.zip  # 重命名为当天的日期加原来的后缀名
+      - name: Save files to GitHub action
+        uses: actions/upload-artifact@v2
+        with:
+          name: downloaded_files  # 上传的文件集合名称
+          path: |  # 上传的文件路径
+            install_lts_${insert\_element\_3\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.sh
+            BtSoft_${insert\_element\_4\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.zip
