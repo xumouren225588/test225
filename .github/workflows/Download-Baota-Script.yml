@@ -1,8 +1,8 @@
-
+name: Download and Rename Files
 on:
   push:
-    paths:
-      - '*'  # 表示匹配项目中的任何文件路径
+    branches:
+      - master
 jobs:
   download_and_rename:
     runs-on: ubuntu-latest  # 选择运行环境，这里选择Ubuntu最新版
