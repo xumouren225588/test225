@@ -14,5 +14,5 @@ jobs:
       - name: Move files to root directory folder
         run: |
           mkdir -p /path/to/folder  # 创建保存文件夹，修改为实际路径
-          mv $(date +%Y%m%d)_install_lts.sh /path/to/folder  # 移动文件，修改为实际路径
-          mv $(date +%Y%m%d)_BtSoft.zip /path/to/folder  # 移动文件，修改为实际路径
+          mv $(date +%Y%m%d)_install_lts.sh /downloads  # 移动文件，修改为实际路径
+          mv $(date +%Y%m%d)_BtSoft.zip /downloads  # 移动文件，修改为实际路径
