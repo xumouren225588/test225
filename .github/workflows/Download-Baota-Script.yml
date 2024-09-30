@@ -1,18 +1,20 @@
-name: Download and Rename Install Packages
-on:
-  schedule:
-    - cron: '20 9 * * *'  # 每天0点触发
-
-jobs:
-  download_and_rename:
-    runs-on: ubuntu-latest  # 选择运行环境，这里以Ubuntu为例
-    steps:
-      - name: Download install_lts.sh
-        run: wget -O $(date +%Y%m%d)_install_lts.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
-      - name: Download BtSoft.zip
-        run: wget -O $(date +%Y%m%d)_BtSoft.zip <mark>https://download.bt.cn/win/panel/BtSoft.zip</mark>
-      - name: Move files to root directory folder
-        run: |
-          mkdir -p /path/to/folder  # 创建保存文件夹，修改为实际路径
-          mv $(date +%Y%m%d)_install_lts.sh /downloads  # 移动文件，修改为实际路径
-          mv $(date +%Y%m%d)_BtSoft.zip /downloads  # 移动文件，修改为实际路径
+name: Download and Rename Files
+   on:
+     push:
+       branches:
+         - master
+   jobs:
+     download_and_rename:
+       runs-on: ubuntu-latest
+       steps:
+         - name: set beijing timezone
+           uses: szenius/set-timezone@v1.2 
+           with:
+             timezoneLinux: "Asia/Shanghai"
+         - uses: actions/checkout@v3
+         - name: Download install_lts.sh
+           run: |
+             wget -O $(date +%Y%m%d)_install_lts.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
+         - name: Download BtSoft.zip
+           run: |
+             wget -O $(date +%Y%m%d)_BtSoft.zip <mark>https://download.bt.cn/win/panel/BtSoft.zip</mark>
