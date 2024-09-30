@@ -1,4 +1,4 @@
-name: Download and Rename Files
+name: Download and Rename Files vm
    on:
      push:
        branches:
