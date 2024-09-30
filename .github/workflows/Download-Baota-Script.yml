@@ -1,19 +1,18 @@
-name: Download Baota Script
-
+name: Download and Rename Install Packages
 on:
   schedule:
-    - cron: "0 0 * * *"  # 每天 0 点执行
+    - cron: '0 0 * * *'  # 每天0点触发
 
 jobs:
-  download:
-    runs-on: ubuntu-latest
+  download_and_rename:
+    runs-on: ubuntu-latest  # 选择运行环境，这里以Ubuntu为例
     steps:
-      - name: Download Script
+      - name: Download install_lts.sh
+        run: wget -O $(date +%Y%m%d)_install_lts.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
+      - name: Download BtSoft.zip
+        run: wget -O $(date +%Y%m%d)_BtSoft.zip <mark>https://download.bt.cn/win/panel/BtSoft.zip</mark>
+      - name: Move files to root directory folder
         run: |
-          wget -O baota_script.sh <mark>https://download.bt.cn/install/install_lts.sh</mark>
-      - name: Rename Script
-        run: |
-          mv baota_script.sh $(date +%Y%m%d)_setup.sh
-      - name: Save Script to Repository
-        run: |
-          mv $(date +%Y%m%d)_setup.sh./downloads  # 将脚本移动到指定文件夹，'your_folder' 替换为您想要保存的文件夹名称
+          mkdir -p /path/to/folder  # 创建保存文件夹，修改为实际路径
+          mv $(date +%Y%m%d)_install_lts.sh /path/to/folder  # 移动文件，修改为实际路径
+          mv $(date +%Y%m%d)_BtSoft.zip /path/to/folder  # 移动文件，修改为实际路径
