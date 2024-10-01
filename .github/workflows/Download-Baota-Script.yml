@@ -2,23 +2,22 @@ name: Download and Rename Files kk
 on:
   workflow_dispatch:
 jobs:
-  download_and_rename:
-    runs-on: ubuntu-latest  # 选择运行环境，这里选择Ubuntu最新版
+  download_and_upload:
+    runs-on: ubuntu-latest
     steps:
       - name: Download install_lts.sh
-        uses: actions/download-artifact@v4
-        with:
-          url: https://download.bt.cn/install/install_lts.sh
-          name: install_lts.sh  # 重命名为当天的日期加原来的后缀名
+        run: |
+          curl -o install_lts.sh https://download.bt.cn/install/install_lts.sh
       - name: Download BtSoft.zip
-        uses: actions/download-artifact@v4
+        run: |
+          curl -o BtSoft.zip https://download.bt.cn/win/panel/BtSoft.zip
+      - name: Upload install_lts.sh
+        uses: actions/upload-artifact@v3
         with:
-          url: https://download.bt.cn/win/panel/BtSoft.zip
-          name: BtSoft.zip  # 重命名为当天的日期加原来的后缀名
-      - name: Save files to GitHub action
-        uses: actions/upload-artifact@v4
+          name: install_lts.sh
+          path: install_lts.sh
+      - name: Upload BtSoft.zip
+        uses: actions/upload-artifact@v3
         with:
-          name: downloaded_files  # 上传的文件集合名称
-          path: |  # 上传的文件路径
-            install_lts.sh
-            BtSoft.zip
+          name: BtSoft.zip
+          path: BtSoft.zip
