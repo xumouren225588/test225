@@ -1,4 +1,4 @@
 FROM python:3.8-slim
-WORKDIR /app
-COPY . /app
+WORKDIR /ap
+COPY . /ap
 CMD ["python","test666.py"]
