@@ -1,6 +1,7 @@
-name: Download and Rename Files kk
+name: baota panel downloader
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # 每天0点触发
 jobs:
   download_and_upload:
     runs-on: ubuntu-latest
