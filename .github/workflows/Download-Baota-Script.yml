@@ -13,15 +13,10 @@ jobs:
       - name: Download BtSoft.zip
         run: |
           curl -o BtSoft.zip https://download.bt.cn/win/panel/BtSoft.zip
-      - name: Upload install_lts.sh
+      - name: Upload packages
         uses: softprops/action-gh-release@v2
         with:
           files: |
             install_lts.sh
-          tag_name: latest
-      - name: Upload BtSoft.zip
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
             BtSoft.zip
           tag_name: latest
