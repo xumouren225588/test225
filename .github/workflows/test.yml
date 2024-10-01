@@ -1,42 +1,56 @@
-
-name: Install and Package Python Libraries
+name: Download and Compress Library
 
 on:
   workflow_dispatch:
     inputs:
       os:
-        description: 'Select operating system'
+        description: 'Operating System'
         required: true
-        default: 'ubuntu-latest'
-        type: choice
+        default: 'windows-latest'
         options:
           - 'ubuntu-latest'
           - 'windows-latest'
           - 'macos-latest'
       python_version:
-        description: 'Enter Python version'
+        description: 'Python Version'
         required: true
-        default: '3.9'
-      libraries:
-        description: 'Enter third-party library names separated by spaces'
+        default: '3.10'
+      library_name:
+        description: 'Library Name'
         required: true
 
 jobs:
-  install_and_package:
+  download_and_compress:
     runs-on: ${{ inputs.os }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python_version }}
-      - name: Install libraries
-        run: pip install ${{ inputs.libraries }}
-      - name: Create zip archive
+
+      - name: Create temp directory
+        run: mkdir temp
+
+      - name: Download library
+        run: python -m pip download ${{ inputs.library_name }} -d temp
+
+      - name: Compress library
         run: |
-          zip -r libraries.zip *.whl
+          import os
+          import zipfile
+          with zipfile.ZipFile('library_archive.zip', 'w') as zipf:
+            for root, dirs, files in os.walk('temp'):
+              for file in files:
+                zipf.write(os.path.join(root, file))
+
+      - name: Remove temp directory
+        run: rm -rf temp
+
       - name: Upload archive
         uses: actions/upload-artifact@v3
         with:
-          name: libraries
-          path: libraries.zip
+          name: library_archive
+          path: library_archive.zip
