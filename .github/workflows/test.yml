@@ -1,0 +1,42 @@
+
+name: Install and Package Python Libraries
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Select operating system'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - 'ubuntu-latest'
+          - 'windows-latest'
+          - 'macos-latest'
+      python_version:
+        description: 'Enter Python version'
+        required: true
+        default: '3.9'
+      libraries:
+        description: 'Enter third-party library names separated by spaces'
+        required: true
+
+jobs:
+  install_and_package:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python_version }}
+      - name: Install libraries
+        run: pip install ${{ inputs.libraries }}
+      - name: Create zip archive
+        run: |
+          zip -r libraries.zip *.whl
+      - name: Upload archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: libraries
+          path: libraries.zip
