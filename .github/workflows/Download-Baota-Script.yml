@@ -9,16 +9,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           url: https://download.bt.cn/install/install_lts.sh
-          name: install_lts_${insert\_element\_1\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.sh  # 重命名为当天的日期加原来的后缀名
+          name: install_lts.sh  # 重命名为当天的日期加原来的后缀名
       - name: Download BtSoft.zip
         uses: actions/download-artifact@v4
         with:
           url: https://download.bt.cn/win/panel/BtSoft.zip
-          name: BtSoft_${insert\_element\_2\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.zip  # 重命名为当天的日期加原来的后缀名
+          name: BtSoft.zip  # 重命名为当天的日期加原来的后缀名
       - name: Save files to GitHub action
         uses: actions/upload-artifact@v4
         with:
           name: downloaded_files  # 上传的文件集合名称
           path: |  # 上传的文件路径
-            install_lts_${insert\_element\_3\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.sh
-            BtSoft_${insert\_element\_4\_e3sgZ2l0aHViLmV2ZW50LnRpbWVzdGFtcCB9fQ==}.zip
+            install_lts.sh
+            BtSoft.zip
