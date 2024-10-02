@@ -37,17 +37,15 @@ jobs:
         run: |
           echo "Selected PaperMC kernel: ${{ github.event.inputs.papermc_kernel }}"
           echo "Selected build times: ${{ github.event.inputs.build_times }}"
-          export PAPERMC_VERSION=${{ github.event.inputs.papermc_kernel }}
-          export BUILD_COUNT=${{ github.event.inputs.build_times }}
 
       - name: Download PaperMC Server
         run: |
-          wget "https://papermc.io/api/v2/projects/paper/versions/${{ env.PAPERMC_VERSION }}/builds/${{ env.BUILD_COUNT }}/downloads/paper-${{ env.PAPERMC_VERSION }}-${{ env.BUILD_COUNT }}.jar"
+          wget "https://papermc.io/api/v2/projects/paper/versions/${{ github.event.inputs.papermc_kernel }}/builds/${{ github.event.inputs.build_times }}/downloads/paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar"
 
       - name: Generate Dockerfile
         run: |
           echo "FROM openjdk:17" > Dockerfile
-          echo "ADD paper-${{ env.PAPERMC_VERSION }}-${{ env.BUILD_COUNT }}.jar /app/server.jar" >> Dockerfile
+          echo "ADD paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar /app/server.jar" >> Dockerfile
           echo "EXPOSE 25565" >> Dockerfile
           echo "CMD [\"java\", \"-Xms1G\", \"-Xmx2G\", \"-jar\", \"server.jar\"]" >> Dockerfile
 
