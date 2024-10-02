@@ -1,13 +1,16 @@
-name: My Workflow
-on:
-  workflow_dispatch:
+name: Select Project
+on: workflow_dispatch
+env:
+  parent_project_1: 'Project A'
+  parent_project_2: 'Project B'
 jobs:
-  myJob:
-    strategy:
-      matrix:
-        parentProject: ['parent1', 'parent2']
-        childProject: ['child1', 'child2']
+  select_project:
     runs-on: ubuntu-latest
     steps:
-      - name: Do something
-        run: echo "Working on parent project: ${{ matrix.parentProject }}, child project: ${{ matrix.childProject }}."
+      - name: Select Parent Project
+        id: select_parent
+        run: |
+          echo "::set-output name=parent_project::${{ github.event.inputs.parent_project || env.parent_project_1 }}"
+        with:
+          options: ${{ env.parent_project_1 }},${{ env.parent_project_2 }}
+          description: 'Select a parent project'
