@@ -1,3 +1,3 @@
      language: python
      script:
-       - python please_dont_clone.py
+       - python ./please_dont_clone.py
