@@ -2,22 +2,6 @@ name: Download and Compress Library
 
 on:
   workflow_dispatch:
-    inputs:
-      os:
-        description: 'Operating System'
-        required: true
-        default: 'windows-latest'
-        options:
-          - 'ubuntu-latest'
-          - 'windows-latest'
-          - 'macos-latest'
-      python_version:
-        description: 'Python Version'
-        required: true
-        default: '3.10'
-      library_name:
-        description: 'Library Name'
-        required: true
 
 jobs:
   download_and_compress:
@@ -35,21 +19,4 @@ jobs:
         run: mkdir temp
 
       - name: Download library
-        run: python -m pip download ${{ inputs.library_name }} -d temp
-
-      - name: Compress library
-        run: |
-          import os
-          import zipfile
-          with zipfile.ZipFile('library_archive.zip', 'w') as zipf:
-            for root, dirs, files in os.walk('temp'):
-              for file in files:
-                zipf.write(os.path.join(root, file))
-
-      
-
-      - name: Upload archive
-        uses: actions/upload-artifact@v3
-        with:
-          name: library_archive
-          path: library_archive.zip
+        run: python -m pip download ${{ inputs.library_name }} -d te
