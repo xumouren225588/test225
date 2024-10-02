@@ -1,12 +1,13 @@
-name: Download and Compress Library
-
+name: My Workflow
 on:
   workflow_dispatch:
-
 jobs:
-  download_and_compress:
-    runs-on: windows-latest
+  myJob:
+    strategy:
+      matrix:
+        parentProject: ['parent1', 'parent2']
+        childProject: ['child1', 'child2']
+    runs-on: ubuntu-latest
     steps:
-
-      - name: Create temp directory
-        run: cmd
+      - name: Do something
+        run: echo "Working on parent project: ${{ matrix.parentProject }}, child project: ${{ matrix.childProject }}."
