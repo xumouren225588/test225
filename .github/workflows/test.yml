@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       papermc_kernel:
-        description: 'Select PaperMC kernel version'
+        description: '请选择服务器核心版本'
         required: true
         type: choice
         
@@ -13,7 +13,7 @@ on:
           - '1.21'
           - '1.20'
       build_times:
-        description: 'Select build times'
+        description: '请选择构建次数'
         required: true
         type: choice
         default: '10'
@@ -58,7 +58,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY_URL }}/your-image-name:${{ env.PAPERMC_VERSION }}
+          tags: ${{ env.REGISTRY_URL }}/your-image-name:${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ env.REGISTRY_USERNAME }}
           password: ${{ env.REGISTRY_PASSWORD }}
