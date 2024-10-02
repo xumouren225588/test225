@@ -52,17 +52,15 @@ jobs:
       - name: Generate eula.txt
         run: |
           echo "eula=True" > eula.txt
-      - name: Login
-        uses: docker/build-push-action@v4
-        with:
           
-          registry: ${{ env.REGISTRY_URL }}
-          username: ${{ env.REGISTRY_USERNAME }}
-          password: ${{ env.REGISTRY_PASSWORD }}
+          
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
           context: .
           push: true
           tags: ${{ env.REGISTRY_URL }}/your-image-name:${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}
