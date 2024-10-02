@@ -1,16 +1,47 @@
-name: Select Project
-on: workflow_dispatch
-env:
-  parent_project_1: 'Project A'
-  parent_project_2: 'Project B'
+name: Select Options Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      parentOption:
+        description: 'Select a parent option'
+        required: true
+        default: 'default_parent'
+        options:
+          - 'parent_option_1'
+          - 'parent_option_2'
+          - 'parent_option_3'
+      childOption:
+        description: 'Select a child option for the selected parent'
+        required: true
+        if: github.event.inputs.parentOption == 'parent_option_1'
+        default: 'default_child_for_parent_1'
+        options:
+          - 'child_option_1_for_parent_1'
+          - 'child_option_2_for_parent_1'
+          - 'child_option_3_for_parent_1'
+      childOption:
+        description: 'Select a child option for the selected parent'
+        required: true
+        if: github.event.inputs.parentOption == 'parent_option_2'
+        default: 'default_child_for_parent_2'
+        options:
+          - 'child_option_1_for_parent_2'
+          - 'child_option_2_for_parent_2'
+          - 'child_option_3_for_parent_2'
+      childOption:
+        description: 'Select a child option for the selected parent'
+        required: true
+        if: github.event.inputs.parentOption == 'parent_option_3'
+        default: 'default_child_for_parent_3'
+        options:
+          - 'child_option_1_for_parent_3'
+          - 'child_option_2_for_parent_3'
+          - 'child_option_3_for_parent_3'
 jobs:
-  select_project:
+  outputOptions:
     runs-on: ubuntu-latest
     steps:
-      - name: Select Parent Project
-        id: select_parent
+      - name: Output Selected Options
         run: |
-          echo "::set-output name=parent_project::${{ github.event.inputs.parent_project || env.parent_project_1 }}"
-        with:
-          options: ${{ env.parent_project_1 }},${{ env.parent_project_2 }}
-          description: 'Select a parent project'
+          echo "Selected parent option: ${{ github.event.inputs.parentOption }}"
+          echo "Selected child option: ${{ github.event.inputs.childOption }}"
