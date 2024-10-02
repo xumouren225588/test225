@@ -1,47 +1,63 @@
-name: Select Options Workflow
+name: Build PaperMC Server and Push to ACR
 on:
   workflow_dispatch:
     inputs:
-      parentOption:
-        description: 'Select a parent option'
+      papermc_kernel:
+        description: 'Select PaperMC kernel version'
         required: true
-        default: 'default_parent'
+        default: 'paper-1.21.1'
         options:
-          - 'parent_option_1'
-          - 'parent_option_2'
-          - 'parent_option_3'
-      childOption:
-        description: 'Select a child option for the selected parent'
+          - 'paper-1.21.1'
+          - 'paper-1.21'
+          - 'paper-1.20'
+      build_times:
+        description: 'Select build times'
         required: true
-        if: github.event.inputs.parentOption == 'parent_option_1'
-        default: 'default_child_for_parent_1'
+        default: '10'
         options:
-          - 'child_option_1_for_parent_1'
-          - 'child_option_2_for_parent_1'
-          - 'child_option_3_for_parent_1'
-      childOption:
-        description: 'Select a child option for the selected parent'
-        required: true
-        if: github.event.inputs.parentOption == 'parent_option_2'
-        default: 'default_child_for_parent_2'
-        options:
-          - 'child_option_1_for_parent_2'
-          - 'child_option_2_for_parent_2'
-          - 'child_option_3_for_parent_2'
-      childOption:
-        description: 'Select a child option for the selected parent'
-        required: true
-        if: github.event.inputs.parentOption == 'parent_option_3'
-        default: 'default_child_for_parent_3'
-        options:
-          - 'child_option_1_for_parent_3'
-          - 'child_option_2_for_parent_3'
-          - 'child_option_3_for_parent_3'
+          - '10'
+          - '20'
+          - '30'
+          - '40'
+          - '50'
+
+env:
+  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+  REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
 jobs:
-  outputOptions:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Output Selected Options
+      - name: Set selected options
         run: |
-          echo "Selected parent option: ${{ github.event.inputs.parentOption }}"
-          echo "Selected child option: ${{ github.event.inputs.childOption }}"
+          echo "Selected PaperMC kernel: ${{ github.event.inputs.papermc_kernel }}"
+          echo "Selected build times: ${{ github.event.inputs.build_times }}"
+          export PAPERMC_VERSION=${{ github.event.inputs.papermc_kernel }}
+          export BUILD_COUNT=${{ github.event.inputs.build_times }}
+
+      - name: Download PaperMC Server
+        run: |
+          wget "https://papermc.io/api/v2/projects/paper/versions/${{ env.PAPERMC_VERSION }}/builds/${{ env.BUILD_COUNT }}/downloads/paper-${{ env.PAPERMC_VERSION }}-${{ env.BUILD_COUNT }}.jar"
+
+      - name: Generate Dockerfile
+        run: |
+          echo "FROM openjdk:17" > Dockerfile
+          echo "ADD paper-${{ env.PAPERMC_VERSION }}-${{ env.BUILD_COUNT }}.jar /app/server.jar" >> Dockerfile
+          echo "EXPOSE 25565" >> Dockerfile
+          echo "CMD [\"java\", \"-Xms1G\", \"-Xmx2G\", \"-jar\", \"server.jar\"]" >> Dockerfile
+
+      - name: Generate eula.txt
+        run: |
+          echo "eula=True" > eula.txt
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY_URL }}/your-image-name:${{ env.PAPERMC_VERSION }}
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_PASSWORD }}
