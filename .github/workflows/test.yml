@@ -7,11 +7,11 @@ on:
         required: true
         type: choice
         
-        default: 'paper-1.21.1'
+        default: '1.21.1'
         options:
-          - 'paper-1.21.1'
-          - 'paper-1.21'
-          - 'paper-1.20'
+          - '1.21.1'
+          - '1.21'
+          - '1.20'
       build_times:
         description: 'Select build times'
         required: true
@@ -40,8 +40,8 @@ jobs:
 
       - name: Download PaperMC Server
         run: |
-          wget "https://papermc.io/api/v2/projects/paper/versions/${{ github.event.inputs.papermc_kernel }}/builds/${{ github.event.inputs.build_times }}/downloads/paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar"
-
+          wget "https://api.papermc.io/v2/projects/paper/versions/${{ github.event.inputs.papermc_kernel }}/builds/${{ github.event.inputs.build_times }}/downloads/paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar"
+          #https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/118/downloads/paper-1.21.1-118.jar
       - name: Generate Dockerfile
         run: |
           echo "FROM openjdk:17" > Dockerfile
