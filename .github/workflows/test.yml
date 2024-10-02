@@ -5,7 +5,8 @@ on:
       papermc_kernel:
         description: 'Select PaperMC kernel version'
         required: true
-        choose: true
+        type: choice
+        
         default: 'paper-1.21.1'
         options:
           - 'paper-1.21.1'
@@ -14,7 +15,7 @@ on:
       build_times:
         description: 'Select build times'
         required: true
-        choose: true
+        type: choice
         default: '10'
         options:
           - '10'
