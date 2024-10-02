@@ -5,18 +5,8 @@ on:
 
 jobs:
   download_and_compress:
-    runs-on: ${{ inputs.os }}
+    runs-on: windows-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ inputs.python_version }}
 
       - name: Create temp directory
-        run: mkdir temp
-
-      - name: Download library
-        run: python -m pip download ${{ inputs.library_name }} -d te
+        run: cmd
