@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       papermc_kernel:
-        description: '请选择服务器核心版本'
+        description: '请选择服务器paper核心版本'
         required: true
         type: choice
         
@@ -28,6 +28,7 @@ env:
   REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
   REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
   REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+  NAME_SPACE: ${{ secrets.NAME_SPACE }}
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
           #https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/118/downloads/paper-1.21.1-118.jar
       - name: Generate Dockerfile
         run: |
-          echo "FROM openjdk:17" > Dockerfile
+          echo "FROM openjdk:22" > Dockerfile
           echo "ADD paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar /app/server.jar" >> Dockerfile
           echo "EXPOSE 25565" >> Dockerfile
           echo "CMD [\"java\", \"-Xms1G\", \"-Xmx2G\", \"-jar\", \"server.jar\"]" >> Dockerfile
@@ -63,5 +64,5 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
           context: .
           push: true
-          tags: ${{ env.REGISTRY_URL }}/your-image-name:${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}
+          tags: ${{ env.REGISTRY_URL }}/${{ env.NAME_SPACE }}/mcserver:${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}
           
