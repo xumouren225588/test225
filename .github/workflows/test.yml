@@ -57,7 +57,7 @@ jobs:
           
 
       - name: Login
-        uses: docker/build-push-action@v4
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ env.REGISTRY_USERNAME }}
