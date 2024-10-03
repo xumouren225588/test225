@@ -67,5 +67,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY_URL }}/${{ env.NAME_SPACE }}/mcserver:${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}
+          tags: ${{ env.REGISTRY_URL }}/${{ env.NAME_SPACE }}/mcserver:${{ github.event.inputs.papermc_kernel }}
           
