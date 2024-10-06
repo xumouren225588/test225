@@ -28,6 +28,11 @@ jobs:
           latest_release=$(curl -s https://api.github.com/repos/ic005k/OCAuxiliaryTools/releases/latest | jq -r '.tag_name')
           wget -O tools/OCAT-$latest_release.zip https://github.com/ic005k/OCAuxiliaryTools/releases/download/$latest_release/OCAT-Win64.zip
 
+      - name: Download USBToolBox
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/USBToolBox/tool/releases/latest | jq -r '.tag_name')
+          wget -O tools/USBToolBox-$latest_release.exe https://github.com/USBToolBox/tool/releases/download/$latest_release/Windows.exe
+
 
       - name: Download OpenCore
         run: |
