@@ -12,10 +12,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install wget -y
       
       - name: Install jq
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-        mkdir tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          mkdir tools
 
 
       - name: Download RapidEFI
@@ -29,8 +29,8 @@ jobs:
           wget -O tools/OCAT-$latest_release.zip https://github.com/ic005k/OCAuxiliaryTools/releases/download/$latest_release/OCAT-Win64.zip
 
 
-      - name: Download from acidanthera/OpenCorePkg
+      - name: Download OpenCore
         run: |
           
           latest_release=$(curl -s https://api.github.com/repos/acidanthera/OpenCorePkg/releases/latest | jq -r '.tag_name')
-          wget -O tools/OpenCorePkg-$latest_release.zip https://github.com/acidanthera/OpenCorePkg/releases/download/$latest_release/OCAT-Win64.zip
+          wget -O tools/OpenCorePkg-$latest_release.zip https://github.com/acidanthera/OpenCorePkg/releases/download/$latest_release/OpenCore-$latest_release-RELEASE.zip
