@@ -24,3 +24,35 @@ jobs:
 
     - name: Output latest release version
       run: echo The latest release version is ${{ env.latest_release }}
+name: Download and Upload Files
+on:
+  workflow_dispatch:
+jobs:
+  download_and_upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install wget
+        run: sudo apt-get update && sudo apt-get install wget -y
+      
+      - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+      - name: Get latest release
+      run: |
+        latest_release=$(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | jq -r '.tag_name')
+      - name: Download from JeoJay127/RapidEFI-Tool
+        run: |
+          wget -O RapidEFI.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
+
+      - name: Download from ic005k/QtOpenCoreConfig
+        run: |
+          wget -O QtOpenCoreConfig.zip $(curl -s https://api.github.com/repos/ic005k/QtOpenCoreConfig/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+
+      - name: Download from acidanthera/OpenCorePkg
+        run: |
+          wget -O OpenCorePkg.zip $(curl -s https://api.github.com/repos/acidanthera/OpenCorePkg/releases/latest | grep bro
