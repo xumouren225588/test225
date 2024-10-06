@@ -1,76 +1,47 @@
 name: Build PaperMC Server and Push to ACR
 on:
   workflow_dispatch:
-    inputs:
-      papermc_kernel:
-        description: '请选择服务器paper核心版本'
-        required: true
-        type: choice
-        
-        default: '1.21'
-        options:
-          - '1.21'
-          - '1.20'
-          - '1.19'
-      build_times:
-        description: '请选择构建次数'
-        required: true
-        type: choice
-        default: '10'
-        options:
-          - '10'
-          - '20'
-          - '30'
-          - '40'
-          - '50'
-
-env:
-  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
-  REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-  NAME_SPACE: ${{ secrets.NAME_SPACE }}
-
 jobs:
-  build:
+  download_and_upload:
     runs-on: ubuntu-latest
     steps:
-      - name: Set selected options
-        run: |
-          echo "Selected PaperMC kernel: ${{ github.event.inputs.papermc_kernel }}"
-          echo "Selected build times: ${{ github.event.inputs.build_times }}"
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Download PaperMC Server
-        run: |
-          wget "https://api.papermc.io/v2/projects/paper/versions/${{ github.event.inputs.papermc_kernel }}/builds/${{ github.event.inputs.build_times }}/downloads/paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar"
-          #https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/118/downloads/paper-1.21.1-118.jar
-      - name: Generate Dockerfile
-        run: |
-          echo "FROM openjdk:22" > Dockerfile
-          echo "ADD paper-${{ github.event.inputs.papermc_kernel }}-${{ github.event.inputs.build_times }}.jar /app/server.jar" >> Dockerfile
-          echo "EXPOSE 25565" >> Dockerfile
-          echo "CMD [\"java\", \"-Xms1G\", \"-Xmx2G\", \"-jar\", \"server.jar\"]" >> Dockerfile
+      - name: Install wget
+        run: sudo apt-get update && sudo apt-get install wget -y
 
-      - name: Generate eula.txt
+      - name: Download from JeoJay127/RapidEFI-Tool
         run: |
-          echo "eula=True" > eula.txt
-          
-          
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login
-        uses: docker/login-action@v2
+          wget -O RapidEFI.zip $(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+
+      - name: Download from ic005k/QtOpenCoreConfig
+        run: |
+          wget -O QtOpenCoreConfig.zip $(curl -s https://api.github.com/repos/ic005k/QtOpenCoreConfig/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+
+      - name: Download from acidanthera/OpenCorePkg
+        run: |
+          wget -O OpenCorePkg.zip $(curl -s https://api.github.com/repos/acidanthera/OpenCorePkg/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+
+      - name: Download 7-zip installer
+        run: wget -O 7z_installer.exe https://www.7-zip.org/a/7zr.exe
+
+      - name: Download from custom URL
+        run: wget -O custom_file.zip https://slssq.osslan.com:446/file/?CG5Qbl5vDz4HDgY+AzZUOFJtBDxWTVQRAjADMwFsADADNlU6CWRXXFF/AWEFZVJ9BiZQPFN8BiJVNFY5UGAGYghXUG5eZw9mB2AGaQNiVGJSOgQ3VjhUYQI2AyMBOwByAz5VMQlsVzdRMwFuBWJSZwZlUHNTfAZ0VW9WYlA8BjUIPFAoXjMPYwd+BmEDYlR6UmkEY1Y5VGICZgNnAT4ANQM6VWYJNldmUTcBMgVlUmMGblBjUz4GZlUxVmNQNQZmCDxQP147D2oHNwZgA2NUNFImBHtWYFQmAiMDcAEuAGQDcVVrCTBXPlE0AWAFYlJjBmtQZ1M9BiJVJlY5UGEGYghuUDpeMg9sB2MGaANmVGxSMQQzVj5UYAIjA2MBMQB2Az5VMwljVzFRPwFmBWhSawZqUGJTPgYiVSdWIFB7BjoIOVAwXjEPaAdmBmEDYVRiUjsEMVYvVCMCbAN1AWAANAM7VSwJZlc3UTABeQVjUmAGclBtUzUGIlU2VjxQMQY3
+
+      - name: Create directory
+        run: mkdir combined_directory
+
+      - name: Move files to combined directory
+        run: |
+          mv RapidEFI.zip combined_directory/
+          mv QtOpenCoreConfig.zip combined_directory/
+          mv OpenCorePkg.zip combined_directory/
+          mv 7z_installer.exe combined_directory/
+          mv custom_file.zip combined_directory/
+
+      - name: Upload to Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          username: ${{ env.REGISTRY_USERNAME }}
-          password: ${{ env.REGISTRY_PASSWORD }}
-          registry: ${{ env.REGISTRY_URL }}
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.REGISTRY_URL }}/${{ env.NAME_SPACE }}/mcserver:${{ github.event.inputs.papermc_kernel }}
-          
+          name: combined-files
+          path: combined-files
