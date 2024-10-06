@@ -42,16 +42,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
 
-      - name: Get latest release
-      run: |
-        latest_release=$(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | jq -r '.tag_name')
-      - name: Download from JeoJay127/RapidEFI-Tool
+      - name: Download RapidEFI
         run: |
-          wget -O RapidEFI.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
+          latest_release=$(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | jq -r '.tag_name')
+          wget -O RapidEFI-$latest_release.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
 
-      - name: Download from ic005k/QtOpenCoreConfig
+      - name: Download OCAT
         run: |
-          wget -O QtOpenCoreConfig.zip $(curl -s https://api.github.com/repos/ic005k/QtOpenCoreConfig/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+          latest_release=$(curl -s https://api.github.com/repos/ic005k/OCAuxiliaryTools/releases/latest | jq -r '.tag_name')
+          wget -O RapidEFI-$latest_release.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
+
 
       - name: Download from acidanthera/OpenCorePkg
         run: |
