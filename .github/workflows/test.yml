@@ -1,47 +1,26 @@
-name: Build PaperMC Server and Push to ACR
+name: Get Latest Release
+
 on:
-  workflow_dispatch:
+  
+  workflow_dispatch: # 允许手动触发
+
 jobs:
-  download_and_upload:
+  get-latest-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install wget
-        run: sudo apt-get update && sudo apt-get install wget -y
+    - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
 
-      - name: Download from JeoJay127/RapidEFI-Tool
-        run: |
-          wget -O RapidEFI.zip $(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
+    - name: Get latest release
+      run: |
+        latest_release=$(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | jq -r '.tag_name')
+        echo "Latest release is: $latest_release"
+        echo "latest_release=$latest_release" >> $GITHUB_ENV
 
-      - name: Download from ic005k/QtOpenCoreConfig
-        run: |
-          wget -O QtOpenCoreConfig.zip $(curl -s https://api.github.com/repos/ic005k/QtOpenCoreConfig/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
-
-      - name: Download from acidanthera/OpenCorePkg
-        run: |
-          wget -O OpenCorePkg.zip $(curl -s https://api.github.com/repos/acidanthera/OpenCorePkg/releases/latest | grep browser_download_url | grep '.zip' | grep 'windows' | cut -d '"' -f 4)
-
-      - name: Download 7-zip installer
-        run: wget -O 7z_installer.exe https://www.7-zip.org/a/7zr.exe
-
-      - name: Download from custom URL
-        run: wget -O custom_file.zip https://slssq.osslan.com:446/file/?CG5Qbl5vDz4HDgY+AzZUOFJtBDxWTVQRAjADMwFsADADNlU6CWRXXFF/AWEFZVJ9BiZQPFN8BiJVNFY5UGAGYghXUG5eZw9mB2AGaQNiVGJSOgQ3VjhUYQI2AyMBOwByAz5VMQlsVzdRMwFuBWJSZwZlUHNTfAZ0VW9WYlA8BjUIPFAoXjMPYwd+BmEDYlR6UmkEY1Y5VGICZgNnAT4ANQM6VWYJNldmUTcBMgVlUmMGblBjUz4GZlUxVmNQNQZmCDxQP147D2oHNwZgA2NUNFImBHtWYFQmAiMDcAEuAGQDcVVrCTBXPlE0AWAFYlJjBmtQZ1M9BiJVJlY5UGEGYghuUDpeMg9sB2MGaANmVGxSMQQzVj5UYAIjA2MBMQB2Az5VMwljVzFRPwFmBWhSawZqUGJTPgYiVSdWIFB7BjoIOVAwXjEPaAdmBmEDYVRiUjsEMVYvVCMCbAN1AWAANAM7VSwJZlc3UTABeQVjUmAGclBtUzUGIlU2VjxQMQY3
-
-      - name: Create directory
-        run: mkdir combined_directory
-
-      - name: Move files to combined directory
-        run: |
-          mv RapidEFI.zip combined_directory/
-          mv QtOpenCoreConfig.zip combined_directory/
-          mv OpenCorePkg.zip combined_directory/
-          mv 7z_installer.exe combined_directory/
-          mv custom_file.zip combined_directory/
-
-      - name: Upload to Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: combined-files
-          path: combined-files
+    - name: Output latest release version
+      run: echo The latest release version is ${{ env.latest_release }}
