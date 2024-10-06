@@ -41,16 +41,18 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y jq
+        mkdir tools
+
 
       - name: Download RapidEFI
         run: |
           latest_release=$(curl -s https://api.github.com/repos/JeoJay127/RapidEFI-Tool/releases/latest | jq -r '.tag_name')
-          wget -O RapidEFI-$latest_release.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
+          wget -O tools/RapidEFI-$latest_release.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
 
       - name: Download OCAT
         run: |
           latest_release=$(curl -s https://api.github.com/repos/ic005k/OCAuxiliaryTools/releases/latest | jq -r '.tag_name')
-          wget -O RapidEFI-$latest_release.zip https://github.com/JeoJay127/RapidEFI-Tool/releases/download/$latest_release/RapidEFI-v$latest_release-Windows.zip
+          wget -O tools/OCAT-$latest_release.zip https://github.com/ic005k/OCAuxiliaryTools/releases/download/$latest_release/OCAT-Win64.zip
 
 
       - name: Download from acidanthera/OpenCorePkg
