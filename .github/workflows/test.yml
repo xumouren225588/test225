@@ -32,8 +32,12 @@ jobs:
         run: |
           latest_release=$(curl -s https://api.github.com/repos/USBToolBox/tool/releases/latest | jq -r '.tag_name')
           wget -O tools/USBToolBox-$latest_release.exe https://github.com/USBToolBox/tool/releases/download/$latest_release/Windows.exe
-
-
+      #https://github.com/pbatard/rufus/releases/download/v4.5/rufus-4.5p.exe
+      - name: 正在获取Rufus
+        run: |
+          latest_release=$(curl -s https://api.github.com/repos/pbatard/rufus/releases/latest | jq -r '.tag_name')
+          wget -O tools/Rufus-$latest_release.exe https://github.com/pbatard/rufus/releases/download/$latest_release/rufus-$latest_releasep.exe
+      
       - name: 正在获取OpenCore
         run: |
           
@@ -49,3 +53,4 @@ jobs:
         with:
           name: tools
           path: tools/
+
