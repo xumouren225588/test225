@@ -1,6 +1,6 @@
 name: baota panel downloader
 on:
-  
+  workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'  # 每天0点触发
 jobs:
