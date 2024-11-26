@@ -13,12 +13,12 @@ jobs:
       - name: Download BtSoft.zip
         run: |
           curl -o BtSoft.zip https://download.bt.cn/win/panel/BtSoft.zip
-          curl -o 360setup.exe https://sfdl.360safe.com/inst.exe
+          
       - name: Upload packages
         uses: softprops/action-gh-release@v2
         with:
           files: |
             install_lts.sh
             BtSoft.zip
-            360setup.exe
+            
           tag_name: latest
