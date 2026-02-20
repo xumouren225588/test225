@@ -1,24 +1,10 @@
-name: baota panel downloader
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 1 * * *'  # 每天0点触发
+name: CI
+on: workflow_dispatch
 jobs:
-  download_and_upload:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download install_lts.sh
-        run: |
-          curl -o install_lts.sh https://download.bt.cn/install/install_lts.sh
-      - name: Download BtSoft.zip
-        run: |
-          curl -o BtSoft.zip https://download.bt.cn/win/panel/BtSoft.zip
-          
-      - name: Upload packages
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            install_lts.sh
-            BtSoft.zip
-            
-          tag_name: latest
+    - uses: actions/checkout@v2
+    - name: Setup upterm session
+      uses: owenthereal/action-upterm@v1
+     
