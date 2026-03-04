@@ -8,11 +8,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Start frp tunnel
-        uses: cirunlabs/frp-tunnel-action@v1.2.0
+      - uses: shaowenchen/debugger-action@v2
+        name: debugger
+        timeout-minutes: 30
+        continue-on-error: true
         with:
-          timeout_minutes: 5
-          frp_server: 'frp.freefrp.net'
+          frp_server_addr: 'frp.freefrp.net'
+          frp_server_port: 18653
           frp_token: 'freefrp.net'
-          local_port: 22
-          remote_port: 18653
+          ssh_port: 22
