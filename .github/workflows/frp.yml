@@ -16,3 +16,4 @@ jobs:
           frp_token: 'freefrp.net'
           local_port: 22
           remote_port: 18653
+          ssh_users: runner
