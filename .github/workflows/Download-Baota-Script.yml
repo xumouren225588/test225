@@ -12,10 +12,6 @@ on:
           - windows
           - linux
           - android
-          - php
-          - python
-          - java
-          - aspx
       lhost:
         description: '输入你的公网IP或内网IP'
         required: true
