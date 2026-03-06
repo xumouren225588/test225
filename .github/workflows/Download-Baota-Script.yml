@@ -91,7 +91,8 @@ jobs:
                   # 二级目录：从第2个字符开始，取2个字符 (第3-4位)
                   dir1="${filename:0:2}"
                   dir2="${filename:2:2}" # 注意：起始位置是2，长度是2
-        
+                  echo "DIR1=$dir1" >> $GITHUB_ENV
+                  echo "DIR2=$dir2">>$GITHUB_ENV
                   # --- 创建目录并复制文件 ---
                   # mkdir -p 会自动创建父目录
                   mkdir -p "gitdir/dldir/$dir1/$dir2"
@@ -106,6 +107,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "test"
           git push
+      - name: Print download link
+        run: echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/dldir/${{ env.DIR1 }}/${{ env.DIR2 }}/${{ env.FILENAME }}.${{ env.EXT }}"
       - name: Upload Payload
         uses: actions/upload-artifact@v4
         with:
