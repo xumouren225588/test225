@@ -107,11 +107,12 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "test"
           git push
-      - name: Send mail
-        uses: betterfor/action-sned-mail@main
+      - name: Send email
+        uses: dawidd6/action-send-mail@v11
         with:
           server_address: smtp.163.com
           server_port: 465
+          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Download link
