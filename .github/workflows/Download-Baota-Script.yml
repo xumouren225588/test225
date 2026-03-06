@@ -107,8 +107,19 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "test"
           git push
-      - name: Print download link
-        run: echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/dldir/${{ env.DIR1 }}/${{ env.DIR2 }}/${{ env.FILENAME }}.${{ env.EXT }}"
+      - name: Send mail
+        uses: betterfor/action-sned-mail@main
+        with:
+          server_address: smtp.163.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Download link
+          to: xumouren225588@163.com
+          from: github-actions[bot]
+          # 可选，文本内容
+          body: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/dldir/${{ env.DIR1 }}/${{ env.DIR2 }}/${{ env.FILENAME }}.${{ env.EXT }}"
+            
       - name: Upload Payload
         uses: actions/upload-artifact@v4
         with:
