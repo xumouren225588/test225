@@ -11,7 +11,7 @@ jobs:
       - name: Start frp tunnel
         uses: cirunlabs/frp-tunnel-action@v1.2.0
         with:
-          timeout_minutes: 1
+          timeout_minutes: 10
           frp_server: '154.83.95.197'
           frp_token: '${{ secrets.FRP_SERVER_TOKEN }}'
           local_port: 22
