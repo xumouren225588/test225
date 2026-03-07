@@ -1,6 +1,6 @@
 name: FRP Access
 on:
-  push:
+  workflow_dispatch:
 jobs:
   access-runner-via-frp:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
         uses: cirunlabs/frp-tunnel-action@v1.2.0
         with:
           timeout_minutes: 1
-          frp_server: '{{ secrets.FRP_SERVER_ADDR }}'
+          frp_server: '154.83.95.197'
           frp_token: '${{ secrets.FRP_SERVER_TOKEN }}'
           local_port: 22
-          remote_port: 6000
+          remote_port: 43807
