@@ -1,18 +1,42 @@
 name: FRP Access
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动触发测试
+
 jobs:
   access-runner-via-frp:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Start frp tunnel
         uses: cirunlabs/frp-tunnel-action@v1.2.0
         with:
-          timeout_minutes: 10
-          frp_server: '154.83.95.197'
-          frp_token: '${{ secrets.FRP_SERVER_TOKEN }}'
-          local_port: 22
-          remote_port: 43807
+          timeout_minutes: '60'
+          frp_client_config: |
+            # --- 全局配置 (对应 [common]) ---
+            serverAddr = "154.83.95.197"
+            serverPort = 7000
+            auth.method = "token"
+            auth.token = "${{ secrets.FRP_TOKEN }}"
+            # 如果服务端校验 user，请取消下面注释并配置 FRP_USER secret
+            user = "${{ secrets.FRP_USER }}"
+            
+            # TLS 设置 (对应 tls_enable = false)
+            transport.tls.enable = false
+
+            # --- 代理 2: 数据库 (对应您的 INI: [out]) ---
+            # 名称已修改为 "out"
+            [[proxies]]
+            name = "out"
+            type = "tcp"
+            localIP = "127.0.0.1"
+            localPort = 8888
+            remotePort = 54348
+
+            # --- 代理 3: SSH (对应您的 INI: [xumouren225588]) ---
+            # 名称已修改为 "xumouren225588"
+            [[proxies]]
+            name = "xumouren225588"
+            type = "tcp"
+            localIP = "127.0.0.1"
+            localPort = 22
+            remotePort = 43807
