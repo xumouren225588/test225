@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Android 设置跳转 (Component 模式)</title>
+</head>
+<body>
+
+    <h3>点击以下按钮跳转 (基于 Component)：</h3>
+
+    <!-- 跳转安全设置 -->
+    <!-- 组件: com.android.settings/.Settings$SecurityDashboardActivity -->
+    <a href="intent:#Intent;component=com.android.settings/.Settings%24SecurityDashboardActivity;end">
+        打开安全设置 (Security Dashboard)
+    </a>
+
+    <br><br>
+
+    <!-- 跳转开发者选项 -->
+    <!-- 组件: com.android.settings/.Settings$DevelopmentSettingsActivity -->
+    <!-- 注意：去除了您提供的前缀 'settings/' 以符合标准 intent 协议格式 -->
+    <a href="intent:#Intent;component=com.android.settings/.Settings%24DevelopmentSettingsActivity;end">
+        打开开发者选项 (Development Settings)
+    </a>
+
+</body>
+</html>
