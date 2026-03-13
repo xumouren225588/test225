@@ -83,7 +83,7 @@ jobs:
             -u root \
             kalilinux/kali-rolling \
             bash -c "apt-get update && \
-                     apt-get install -y metasploit-framework curl openjdk-21 && \
+                     apt-get install -y metasploit-framework curl openjdk-21-jdk && \
                      curl -L https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.9.2.jar --output /usr/local/bin/apktool.jar && \
                      curl -L https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool --output /usr/local/bin/apktool && \
                      chmod +x /usr/local/bin/apktool.jar && \
