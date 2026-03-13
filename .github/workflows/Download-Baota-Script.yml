@@ -35,8 +35,6 @@ jobs:
       
       - name: Generate Payload using Kali Docker
         run: |
-           
-          # 拉取 Kali 镜像
           docker pull kalilinux/kali-rolling
           
           # 根据用户选择的平台，设置 msfvenom 参数
