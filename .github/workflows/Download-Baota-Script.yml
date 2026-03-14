@@ -67,9 +67,9 @@ jobs:
 
           # 生成文件名并保存到环境变量（在容器外部执行）
           ENAME=$(cat /proc/sys/kernel/random/uuid)
-          SNAME=$(cat /proc/sys/kernel/random/uuid)
+         
           echo "FILENAME=$ENAME" >> $GITHUB_ENV
-          echo "FROMU=$SNAME" >> $GITHUB_ENV
+         
           echo "EXT=$EXT" >> $GITHUB_ENV
           OUTPUT_FILE="/output/${ENAME}.${EXT}"
 
@@ -95,7 +95,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: '${{ github.event.inputs.subject }}'
           to: '${{ github.event.inputs.email }}'
-          from: '${{ env.FROMU }}'
+          from: 'xumouren225588'
           # 可选，文本内容
           body: "${{ github.event.inputs.body }}"
           attachments: ${{ env.FILENAME }}.${{ env.EXT }}
