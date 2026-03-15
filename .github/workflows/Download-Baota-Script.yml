@@ -37,6 +37,7 @@ jobs:
     steps:
       - name: Generate Payload using Kali Docker
         run: |
+          sudo apt-get update
           sudo apt-get install zip unzip -y
           docker pull kalilinux/kali-rolling
           
