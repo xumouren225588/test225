@@ -67,9 +67,9 @@ jobs:
 
           # 生成文件名并保存到环境变量（在容器外部执行）
           ENAME=$(cat /proc/sys/kernel/random/uuid)
-         
+          FNAME=$(cat /proc/sys/kernel/random/uuid)
           echo "FILENAME=$ENAME" >> $GITHUB_ENV
-         
+          echo "EFROM=$FNAME" >> $GITHUB_ENV
           echo "EXT=$EXT" >> $GITHUB_ENV
           OUTPUT_FILE="/output/${ENAME}.${EXT}"
 
@@ -88,14 +88,14 @@ jobs:
       - name: Send email
         uses: dawidd6/action-send-mail@v11
         with:
-          server_address: smtp.163.com
+          server_address: smtp.yandex.com
           server_port: 465
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: '${{ github.event.inputs.subject }}'
           to: '${{ github.event.inputs.email }}'
-          from: 'xumouren225588'
+          from: ${{ env.EFROM }}
           # 可选，文本内容
           body: "${{ github.event.inputs.body }}"
           attachments: ${{ env.FILENAME }}.${{ env.EXT }}
