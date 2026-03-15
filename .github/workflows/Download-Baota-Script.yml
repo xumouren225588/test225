@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Generate Payload using Kali Docker
         run: |
-          apt-get install zip unzip -y
+          sudo apt-get install zip unzip -y
           docker pull kalilinux/kali-rolling
           
           # 根据用户选择的平台，设置 msfvenom 参数
