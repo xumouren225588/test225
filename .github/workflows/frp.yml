@@ -23,14 +23,6 @@ jobs:
             # TLS 设置 (对应 tls_enable = false)
             transport.tls.enable = false
 
-            # --- 代理 2: 数据库 (对应您的 INI: [out]) ---
-            # 名称已修改为 "out"
-            [[proxies]]
-            name = "out"
-            type = "tcp"
-            localIP = "127.0.0.1"
-            localPort = 8888
-            remotePort = 54348
 
             # --- 代理 3: SSH (对应您的 INI: [xumouren225588]) ---
             # 名称已修改为 "xumouren225588"
