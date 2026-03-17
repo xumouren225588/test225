@@ -1,8 +1,6 @@
 name: Deploy ChmlFrp Client
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch: # 允许手动触发
 
 jobs:
@@ -25,9 +23,10 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile "chmlfrp.zip"
           
           # 解压
-          Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
+          Expand-Archive -Path "chmlfrp.zip" -DestinationPath "t"
           
 
       - name: Start ChmlFrp Client
         run: |
+          cd t
           .\frpc -u "${{ secrets.FRP_USER }}" -p "${{ secrets.FRP_TOKEN }}" 
