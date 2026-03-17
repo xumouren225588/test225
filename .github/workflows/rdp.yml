@@ -13,8 +13,6 @@ jobs:
 
       - name: Download ChmlFrp
         run: |
-          
-          # 下载压缩包
           $url = "https://cf-v1.uapis.cn/download/ChmlFrp-0.51.2_251023_2_windows_amd64.zip"
           
           Invoke-WebRequest -Uri $url -OutFile "chmlfrp.zip"
