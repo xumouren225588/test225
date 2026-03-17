@@ -20,7 +20,9 @@ jobs:
           # 解压
           Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
           rm frpc.ini
-          Set-Content -Path "frpc.ini" -Value @"${{ secrets.CONF }}"@
+          Set-Content -Path "frpc.ini" -Value @"
+${{ secrets.CONF }}
+"@
 
       - name: Start ChmlFrp Client
         run: |
