@@ -1,0 +1,33 @@
+name: Deploy ChmlFrp Client
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  deploy-frp:
+    runs-on: windows-latest # 必须使用 Windows Runner 以运行 .exe
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download ChmlFrp
+        run: |
+          # 创建目录
+          mkdir frp_client
+          cd frp_client
+          
+          # 下载压缩包
+          $url = "https://cf-v1.uapis.cn/download/ChmlFrp-0.51.2_251023_2_windows_amd64.zip"
+          
+          Invoke-WebRequest -Uri $url -OutFile "chmlfrp.zip"
+          
+          # 解压
+          Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
+          
+
+      - name: Start ChmlFrp Client
+        run: |
+          .\frpc -u "${{ secrets.FRP_USER }}" -p "${{ secrets.FRP_TOKEN }}" 
