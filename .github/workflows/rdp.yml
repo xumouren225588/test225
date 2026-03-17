@@ -24,4 +24,4 @@ jobs:
 
       - name: Start ChmlFrp Client
         run: |
-          .\frpc -u "${{ secrets.FRP_USER }}" -p "${{ secrets.FRP_TOKEN }}" 
+          .\frpc
