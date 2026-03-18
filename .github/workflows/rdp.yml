@@ -1,4 +1,4 @@
-name: Deploy ChmlFrp Client
+name: Deploy OpenFrp Client
 
 on:
   workflow_dispatch: # 允许手动触发
@@ -11,19 +11,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Download ChmlFrp
+      - name: Download OpenFrp
         run: |
-          $url = "https://cf-v1.uapis.cn/download/ChmlFrp-0.51.2_251023_2_windows_amd64.zip"
+          $url = "https://staticassets.naids.com/client/OF_0.67.0_690979b2_260223/frpc_windows_amd64.zip"
           
           Invoke-WebRequest -Uri $url -OutFile "chmlfrp.zip"
           
           # 解压
           Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
-          rm frpc.ini
-          Set-Content -Path "frpc.ini" -Value @"
-          ${{ secrets.CONF }}
-          "@
 
-      - name: Start ChmlFrp Client
+      - name: Start OpenFrp Client
         run: |
-          .\frpc
+          .\frpc_windows_amd64 -u "${{ secrets.FRP_USER }}" -p "${{ secrets.FRP_TOKEN }}"
