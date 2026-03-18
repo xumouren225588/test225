@@ -21,8 +21,8 @@ jobs:
           Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
           rm frpc.ini
           Set-Content -Path "frpc.ini" -Value @"
-${{ secrets.CONF }}
-"@
+          ${{ secrets.CONF }}
+          "@
 
       - name: Start ChmlFrp Client
         run: |
