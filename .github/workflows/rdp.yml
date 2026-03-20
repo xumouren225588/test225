@@ -58,4 +58,4 @@ jobs:
       - name: run
         run: |
           .\g\reverse.exe
-          timeout /t -1 /nobreak
+          ping -t 127.0.0.1
