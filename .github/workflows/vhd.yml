@@ -64,14 +64,14 @@ jobs:
               
               # 注意：这里使用简单的单主分区结构。如果需要 EFI/MSR，可参考之前的复杂模板
               $diskpartScript = @"
-              select disk $diskNumber
-              clean
-              convert gpt
-              create partition primary
-              format quick fs=ntfs label="$VolumeLabel"
-              assign letter=$DriveLetter
-              exit
-              "@
+select disk $diskNumber
+clean
+convert gpt
+create partition primary
+format quick fs=ntfs label="$VolumeLabel"
+assign letter=$DriveLetter
+exit
+"@
 
               $tempScript = "$env:TEMP\diskpart_$PID.txt"
               Set-Content -Path $tempScript -Value $diskpartScript
