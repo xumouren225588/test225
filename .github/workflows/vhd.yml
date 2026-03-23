@@ -1,0 +1,142 @@
+name: Build VHD Image
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # 允许手动触发测试
+
+jobs:
+  build-vhd-job:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # ---------------------------------------------------------
+      # 核心步骤：创建、挂载、分区、格式化、写入、卸载
+      # ---------------------------------------------------------
+      - name: Create, Format, and Populate VHD
+        id: vhd_step
+        shell: pwsh
+        run: |
+          # ================= 配置区域 =================
+          $VhdPath = "D:\a\_temp\my_dynamic_disk.vhdx"
+          $VhdSizeBytes = 2GB
+          $DriveLetter = "Z"
+          $VolumeLabel = "BuildData"
+          # ===========================================
+
+          Write-Host "=== 开始 VHD 自动化流程 ===" -ForegroundColor Cyan
+
+          # 1. 确保目录存在
+          $dir = Split-Path $VhdPath -Parent
+          if (!(Test-Path $dir)) {
+              New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          }
+
+          # 清理旧文件（防止重试时冲突）
+          if (Test-Path $VhdPath) {
+              Write-Host "发现旧文件，尝试卸载并删除..." -ForegroundColor Yellow
+              Dismount-VHD -Path $VhdPath -ErrorAction SilentlyContinue
+              Remove-Item $VhdPath -Force
+          }
+
+          try {
+              # 2. 创建动态扩展 VHDX
+              Write-Host "1. 正在创建动态 VHDX ($($VhdSizeBytes / 1GB) GB)..." -ForegroundColor Green
+              New-VHD -Path $VhdPath -SizeBytes $VhdSizeBytes -Dynamic | Out-Null
+
+              # 3. 挂载 VHD
+              Write-Host "2. 正在挂载 VHD..." -ForegroundColor Green
+              $vhdObject = Mount-VHD -Path $VhdPath -PassThru
+              $diskNumber = $vhdObject.DiskNumber
+
+              if ($null -eq $diskNumber) {
+                  throw "无法获取磁盘编号！"
+              }
+              Write-Host "   已识别磁盘编号: Disk $diskNumber"
+
+              # 4. 生成并执行 DiskPart 脚本
+              Write-Host "3. 正在分区和格式化 (Disk $diskNumber)..." -ForegroundColor Green
+              
+              # 注意：这里使用简单的单主分区结构。如果需要 EFI/MSR，可参考之前的复杂模板
+              $diskpartScript = @"
+              select disk $diskNumber
+              clean
+              convert gpt
+              create partition primary
+              format quick fs=ntfs label="$VolumeLabel"
+              assign letter=$DriveLetter
+              exit
+              "@
+
+              $tempScript = "$env:TEMP\diskpart_$PID.txt"
+              Set-Content -Path $tempScript -Value $diskpartScript
+              
+              $dpResult = diskpart /s $tempScript
+              Remove-Item $tempScript -Force
+
+              if ($LASTEXITCODE -ne 0) {
+                  throw "DiskPart 失败：$dpResult"
+              }
+
+              # 5. 验证挂载并写入数据
+              $mountPoint = "${DriveLetter}:"
+              if (!(Test-Path $mountPoint)) {
+                  throw "盘符 $mountPoint 未成功挂载！"
+              }
+
+              Write-Host "4. 正在写入测试数据到 $mountPoint..." -ForegroundColor Green
+              
+              # 创建一些模拟文件
+              $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+              $content = @"
+              Build Information:
+              - Time: $timestamp
+              - Run ID: ${{ github.run_id }}
+              - Actor: ${{ github.actor }}
+              - Source Repo: ${{ github.repository }}
+              "@
+              
+              Add-Content -Path "$mountPoint\build_info.txt" -Value $content
+              New-Item -ItemType Directory -Force -Path "$mountPoint\ProjectAssets" | Out-Null
+              "Dummy Binary Content" | Out-File "$mountPoint\ProjectAssets\app.exe"
+
+              Write-Host "   数据写入完成。当前占用空间：" -NoNewline
+              $sizeMB = (Get-Item $VhdPath).Length / 1MB
+              Write-Host "{0:N2} MB" -f $sizeMB -ForegroundColor Cyan
+
+          } catch {
+              Write-Error "❌ 发生严重错误：$_"
+              # 即使出错也尝试清理
+              Dismount-VHD -Path $VhdPath -ErrorAction SilentlyContinue
+              exit 1
+          } finally {
+              # 6. 安全卸载 (无论成功失败都执行)
+              Write-Host "5. 正在卸载 VHD..." -ForegroundColor Green
+              try {
+                  if (Get-VHD -Path $VhdPath -ErrorAction SilentlyContinue | Where-Object { $_.Attached }) {
+                      Dismount-VHD -Path $VhdPath
+                      Write-Host "   已成功卸载。"
+                  }
+              } catch {
+                  Write-Warning "卸载时遇到问题：$_"
+              }
+          }
+
+          # 输出变量供后续步骤使用（如果需要）
+          echo "vhd_path=$VhdPath" >> $env:GITHUB_OUTPUT
+
+      # ---------------------------------------------------------
+      # 可选步骤：上传生成的 VHD 作为制品
+      # ---------------------------------------------------------
+      - name: Upload VHD Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynamic-disk-image
+          path: D:\a\_temp\my_dynamic_disk.vhdx
+          retention-days: 5
+          if-no-files-found: error
