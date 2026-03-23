@@ -71,7 +71,7 @@ create partition primary
 format quick fs=ntfs label="$VolumeLabel"
 assign letter=$DriveLetter
 exit
-"@
+              "@
 
               $tempScript = "$env:TEMP\diskpart_$PID.txt"
               Set-Content -Path $tempScript -Value $diskpartScript
