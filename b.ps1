@@ -67,5 +67,5 @@ if ($LASTEXITCODE -eq 0) {
 # 清理临时脚本文件
 Remove-Item $tempScriptPath -Force
 
-# 可选：如果不需要立即使用，可以在此处选择卸载
-# Dismount-VHD -Path $VhdPath
+# 可选：如果不需要立即使用，可以在此处选择卸
+Dismount-VHD -Path $VhdPath
