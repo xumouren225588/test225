@@ -1,5 +1,5 @@
 # --- 配置区域 ---
-$VhdPath = "C:\VHDs\MyDynamicDisk.vhdx"  # VHD 保存路径 (确保文件夹存在)
+$VhdPath = "D:\b.vhdx"  # VHD 保存路径 (确保文件夹存在)
 $VhdSize = 4GB                            # 虚拟磁盘最大容量
 $DriveLetter = "Z"                        # 想要分配的主分区盘符
 $Label = "DataVolume"                     # 卷标名称
