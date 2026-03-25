@@ -55,14 +55,6 @@ Write-Host "4. 正在执行 DiskPart 进行分区和格式化..." -ForegroundCol
 # 执行 DiskPart
 diskpart /s $tempScriptPath
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "5. 操作成功完成！" -ForegroundColor Green
-    Write-Host "   - 文件位置: $VhdPath"
-    Write-Host "   - 挂载盘符: $DriveLetter:"
-    Write-Host "   - 当前实际文件大小 (动态): $((Get-Item $VhdPath).Length / 1MB) MB"
-} else {
-    Write-Error "DiskPart 执行失败，请检查输出信息。"
-}
 
 # 清理临时脚本文件
 Remove-Item $tempScriptPath -Force
