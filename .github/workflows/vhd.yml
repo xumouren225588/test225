@@ -1,6 +1,8 @@
 name: Run Unsigned PowerShell Script
 
-on: workflow_dispatch
+on: 
+  repository_dispatch:
+    types: [bb]
 
 jobs:
   run-script:
