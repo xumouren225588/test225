@@ -1,23 +1,30 @@
-name: Run Unsigned PowerShell Script
+name: Send Email via Dispatch
 
-on: 
+# 1. 定义触发器：监听 repository_dispatch 事件
+on:
   repository_dispatch:
+    # 这里可以指定一个自定义的事件类型，例如 'send_email'
+    # 如果不指定，任何类型的 dispatch 都会触发
     types: [bb]
 
 jobs:
-  run-script:
-    runs-on: windows-latest  # 必须使用 Windows 环境
+  send_email:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      # 必须包含此步骤以获取代码上下文
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Run b.ps1 with Bypass Policy
-        # 方法：直接调用 powershell.exe 并传入 Bypass 参数
-        # 这样可以在不改变系统全局策略的情况下运行未签名脚本
-        run: powershell -ExecutionPolicy Bypass -File .\b.ps1
-        shell: cmd  # 或者使用 'cmd'，显式指定 shell 可以避免默认行为干扰
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      # 2. 发送邮件步骤（基于你提供的配置）
+      - name: Send email
+        uses: dawidd6/action-send-mail@v11
         with:
-          name: my-vhd-image
-          path: D:\b.vhd
+          server_address: smtp.yandex.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: ${{ github.event.client_payload.subject || 'Default Subject' }}
+          to: ${{ github.event.client_payload.to }}
+          from: ${{ github.event.client_payload.from || 'GitHub Action <noreply@github.com>' }}
+          body: ${{ github.event.client_payload.body || 'Empty body' }}
