@@ -31,6 +31,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: my-test-artifact  # 工件名称，用于在 GitHub 界面识别
-          path: test-output.txt   # 要上传的文件路径
+          path: t*.txt   # 要上传的文件路径
           archive: false
           retention-days: 7       # 保留天数 (1-90天)，默认为90天
