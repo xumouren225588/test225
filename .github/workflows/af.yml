@@ -1,0 +1,36 @@
+name: 生成文件并上传工件
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # 也可以手动在 Actions 页面触发
+  workflow_dispatch:
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码（虽然本例不依赖代码，但这是标准步骤）
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+
+      # 2. 生成测试文件
+      - name: 生成测试文本文件
+        run: |
+          echo "🤖 这是一个自动生成的测试文件" > test-output.txt
+          echo "⏰ 生成时间: $(date)" >> test-output.txt
+          echo "🔢 运行 ID: ${{ github.run_id }}" >> test-output.txt
+          echo "📂 当前目录内容:"
+          ls -la
+
+      # 3. 上传工件
+      - name: 上传生成的文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-test-artifact  # 工件名称，用于在 GitHub 界面识别
+          path: test-output.txt   # 要上传的文件路径
+          archive: false
+          retention-days: 7       # 保留天数 (1-90天)，默认为90天
