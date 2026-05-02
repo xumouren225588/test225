@@ -28,7 +28,7 @@ jobs:
 
       # 3. 上传工件
       - name: 上传生成的文件
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: my-test-artifact  # 工件名称，用于在 GitHub 界面识别
           path: t*.txt   # 要上传的文件路径
