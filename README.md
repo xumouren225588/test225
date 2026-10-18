@@ -1,2 +1,2 @@
 本项目将会在UTC时间凌晨1点自动从宝塔面板官网下载安装包和安装脚本
-\textcolor{#8b0000}{\rotatebox{12}{暗}}\textcolor{#220022}{\rotatebox{-9}{影}}\textcolor{#0a0a0a}{\rotatebox{-180}{浮}}\textcolor{#440011}{\rotatebox{17}{动}}\textcolor{#110033}{\rotatebox{-14}{的}}\textcolor{#001122}{\rotatebox{7}{错}}\textcolor{#330000}{\rotatebox{-180}{乱}}\textcolor{#002211}{\rotatebox{-21}{声}}\textcolor{#200020}{\rotatebox{11}{响}}
+\(\textcolor{#8b0000}{\rotatebox{12}{暗}}\textcolor{#220022}{\rotatebox{-9}{影}}\textcolor{#0a0a0a}{\rotatebox{-180}{浮}}\textcolor{#440011}{\rotatebox{17}{动}}\textcolor{#110033}{\rotatebox{-14}{的}}\textcolor{#001122}{\rotatebox{7}{错}}\textcolor{#330000}{\rotatebox{-180}{乱}}\textcolor{#002211}{\rotatebox{-21}{声}}\textcolor{#200020}{\rotatebox{11}{响}})
